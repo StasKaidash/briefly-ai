@@ -5,6 +5,12 @@ import type { NextConfig } from "next";
 // absent in CI.
 import "./src/lib/env";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  // `jsdom` ships native Node modules and a heavy dynamic-require graph that
+  // Next's server bundler can't trace correctly — on Vercel this surfaces as
+  // `Failed to load external module jsdom-...` at runtime. Opting it out makes
+  // Next use plain `require()` from node_modules instead of bundling it.
+  serverExternalPackages: ["jsdom"],
+};
 
 export default nextConfig;
