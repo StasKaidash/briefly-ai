@@ -1,5 +1,5 @@
 import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
+import { parseHTML } from "linkedom";
 
 const MAX_CONTENT_CHARS = 12_000;
 const FETCH_TIMEOUT_MS = 30_000;
@@ -51,9 +51,13 @@ export async function extractArticle(url: string): Promise<ExtractedArticle> {
   const html = await response.text();
   if (!html.trim()) throw new ExtractError("Article body was empty");
 
-  // JSDOM warns when it encounters CSS it can't parse; silence it.
-  const dom = new JSDOM(html, { url, pretendToBeVisual: true });
-  const article = new Readability(dom.window.document).parse();
+  // `linkedom` is a serverless-friendly DOM that works as a drop-in for
+  // Readability — `jsdom` pulled native deps that broke on Vercel (see
+  // `serverExternalPackages` history). `documentURI` is set for relative
+  // link resolution inside Readability.
+  const { document } = parseHTML(html);
+  Object.defineProperty(document, "documentURI", { value: url });
+  const article = new Readability(document).parse();
 
   if (!article || !article.textContent?.trim()) {
     throw new ExtractError(
