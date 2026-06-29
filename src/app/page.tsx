@@ -7,24 +7,17 @@ import {
   Wand2,
 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/server";
 
-export default async function HomePage() {
-  // Signed-in visitors skip the marketing copy and land on their dashboard.
-  // The proxy doesn't enforce this — `/` is public — so we do it inline.
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) redirect("/dashboard");
+// Signed-in visitors are redirected to /dashboard by the proxy
+// (src/lib/supabase/proxy.ts) so this page can render statically.
 
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div>
       <SiteHeader />
-      <main className="flex flex-1 flex-col">
+      <main>
         <Hero />
         <Features />
         <CtaStrip />
@@ -46,7 +39,7 @@ function SiteHeader() {
           <Button asChild variant="ghost" size="sm">
             <Link href="/login">Sign in</Link>
           </Button>
-          <Button asChild size="sm" className="gap-1.5">
+          <Button asChild size="sm" className="hidden gap-1.5 sm:inline-flex">
             <Link href="/login">
               Try it free
               <ArrowRight className="h-3.5 w-3.5" />
@@ -64,21 +57,21 @@ function Hero() {
       {/* Soft violet gradient halo behind the headline — pure CSS, no images. */}
       <div
         aria-hidden
-        className="bg-primary/20 pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[420px] w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
+        className="bg-primary/20 pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[min(420px,60vh)] w-[min(640px,90vw)] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
       />
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-muted-foreground mb-6 font-mono text-[11px] tracking-widest uppercase">
+        <p className="text-muted-foreground mb-6 font-mono text-xs tracking-widest uppercase">
           AI summaries · powered by Claude
         </p>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+        <h1 className="text-balance text-3xl font-bold tracking-tight sm:text-5xl md:text-6xl">
           The shorter way to{" "}
           <span className="text-primary">read the web.</span>
         </h1>
-        <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-base sm:text-lg">
+        <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-pretty text-base sm:text-lg">
           Paste any article URL. Get a 3-sentence TL;DR, 5 key points, and tags
           — in seconds. Your reading list, finally readable.
         </p>
-        <div className="mt-10 flex items-center justify-center gap-3">
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           <Button asChild size="lg" className="gap-2">
             <Link href="/login">
               Try briefly
@@ -124,7 +117,7 @@ function Features() {
     <section className="px-6 py-20">
       <div className="mx-auto max-w-5xl">
         <div className="mx-auto mb-12 max-w-xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl">
             Three steps. Zero friction.
           </h2>
           <p className="text-muted-foreground mt-3 text-sm">
@@ -167,7 +160,7 @@ function CtaStrip() {
   return (
     <section className="px-6 py-20">
       <div className="bg-card ring-foreground/10 mx-auto max-w-3xl rounded-2xl p-10 text-center ring-1">
-        <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+        <h2 className="text-balance text-2xl font-bold tracking-tight sm:text-3xl">
           Ready to read less?
         </h2>
         <p className="text-muted-foreground mt-3 text-sm">
@@ -198,7 +191,7 @@ function SiteFooter() {
           >
             Stas Kaidash
           </a>{" "}
-          · Next.js + Supabase + Claude
+          · Next.js · Supabase · Claude
         </p>
         <p className="font-mono">© {new Date().getFullYear()}</p>
       </div>

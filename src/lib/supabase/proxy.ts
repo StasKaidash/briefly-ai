@@ -53,8 +53,10 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Already signed in and on /login → bounce to /dashboard.
-  if (user && pathname === "/login") {
+  // Already signed in and visiting marketing surfaces → bounce to dashboard.
+  // Doing this here (instead of in app/page.tsx) keeps the landing route
+  // statically renderable, which also re-enables bfcache.
+  if (user && (pathname === "/login" || pathname === "/")) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";

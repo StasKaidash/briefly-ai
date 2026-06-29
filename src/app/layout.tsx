@@ -53,7 +53,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("h-full font-sans antialiased", inter.variable, jetbrainsMono.variable)}
     >
-      <body className="bg-background text-foreground flex min-h-full flex-col">
+      <body className="bg-background text-foreground flex min-h-full flex-col overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
