@@ -8,6 +8,8 @@
 ![Claude](https://img.shields.io/badge/Claude-Sonnet%204.6-cc785c)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)
 
+**Live demo:** [briefly-ai-six.vercel.app](https://briefly-ai-six.vercel.app) — sign in with any email, the magic link arrives in seconds.
+
 ---
 
 ## What it does
@@ -27,7 +29,7 @@
 | UI | Tailwind 4 + shadcn/ui + lucide-react |
 | Auth + DB | Supabase (Postgres + RLS + Realtime + magic-link auth) |
 | AI | `@anthropic-ai/sdk` — Claude Sonnet 4.6 with prompt caching + tool-use |
-| Extraction | `@mozilla/readability` + `jsdom` |
+| Extraction | `@mozilla/readability` + `linkedom` |
 | Validation | zod + `@t3-oss/env-nextjs` |
 | Deploy | Vercel |
 
@@ -67,7 +69,7 @@ src/
 ├── lib/
 │   ├── supabase/{client,server,proxy}.ts   — SSR-aware Supabase clients
 │   ├── anthropic.ts                        — Claude wrapper with tool-use
-│   ├── extract.ts                          — Readability + jsdom
+│   ├── extract.ts                          — Readability + linkedom
 │   └── logger.ts                           — structured one-line logger
 └── proxy.ts                                — Next 16 middleware (auth refresh + route gate)
 ```
@@ -77,6 +79,7 @@ src/
 - **Next.js 16** renamed `middleware.ts` to `proxy.ts` — the file lives at `src/proxy.ts`.
 - `params` is a `Promise` in Next 16 — every dynamic route awaits it before reading the id.
 - Brief creation is **two-phase**: insert a `pending` row, return immediately, then process in `after()` so the form response isn't blocked. The dashboard auto-updates via Supabase Realtime.
+- **DOM parsing on serverless** uses `linkedom`, not `jsdom`. `jsdom`'s transitive `@exodus/bytes` is ESM-only and crashes Vercel's Node runtime with `ERR_REQUIRE_ESM`; `linkedom` is a drop-in for Readability and pure-JS.
 
 ## License
 
