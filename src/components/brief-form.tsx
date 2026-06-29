@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function BriefForm() {
+  const router = useRouter();
   const [state, formAction] = useActionState<CreateBriefState, FormData>(
     createBriefAction,
     null,
@@ -29,10 +31,15 @@ export function BriefForm() {
         description: "Watch the skeleton card finish loading.",
       });
       formRef.current?.reset();
+      // Belt-and-suspenders: the server action revalidates the path and
+      // Supabase Realtime should fire on INSERT, but if Realtime publication
+      // is misconfigured the skeleton card never appears. router.refresh()
+      // guarantees the dashboard re-fetches RSC after a successful submit.
+      router.refresh();
     } else {
       toast.error("Could not start brief", { description: state.error });
     }
-  }, [state]);
+  }, [state, router]);
 
   return (
     <form

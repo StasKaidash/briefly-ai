@@ -6,6 +6,7 @@ import {
   Sparkles,
   Wand2,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,21 @@ function Hero() {
               <ExternalLink className="h-4 w-4" />
             </a>
           </Button>
+        </div>
+      </div>
+
+      {/* Dashboard preview — real screenshot of the app in dark mode. */}
+      <div className="mx-auto mt-16 max-w-5xl px-2 sm:mt-20 sm:px-0">
+        <div className="ring-foreground/10 bg-card overflow-hidden rounded-xl ring-1 shadow-2xl">
+          <Image
+            src="/dashboard-preview.png"
+            alt="briefly dashboard with five AI-summarized articles"
+            width={1678}
+            height={1287}
+            priority
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="h-auto w-full"
+          />
         </div>
       </div>
     </section>
