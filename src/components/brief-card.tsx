@@ -1,6 +1,7 @@
 import { AlertTriangle, Clock } from "lucide-react";
 import Link from "next/link";
 
+import { BriefDeleteButton } from "@/components/brief-delete-button";
 import { TagChip } from "@/components/tag-chip";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Brief } from "@/lib/types";
@@ -76,9 +77,12 @@ function BriefCardFailed({ brief }: { brief: Brief }) {
 
   return (
     <div className="border-destructive/30 bg-destructive/5 flex flex-col gap-3 rounded-xl border border-dashed p-4">
-      <div className="text-destructive flex items-center gap-2 text-xs font-semibold">
-        <AlertTriangle className="h-3.5 w-3.5" />
-        Brief failed
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-destructive flex items-center gap-2 text-xs font-semibold">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Brief failed
+        </div>
+        <BriefDeleteButton briefId={brief.id} compact />
       </div>
       <p className="text-muted-foreground line-clamp-2 text-xs">
         {brief.error ?? "Something went wrong while summarizing this article."}
